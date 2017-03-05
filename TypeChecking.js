@@ -99,10 +99,6 @@ function findProof(j) {
 // Judgments 
 //
 
-function Equal(a,b) {
-    return { tag: "Equal", args: [a,b] };
-}
-
 function Check(g,m,a) {
     return { tag: "Check", args: [g,m,a] };
 }
@@ -170,22 +166,6 @@ function App(m,n) {
 
 
 
-function decomposeEqual(a,b) {
-    if (a.tag === "Nat" && b.tag === "Nat") {
-        return Just([[], as => Just(undefined)]);
-    } else if (a.tag === "Prod" && b.tag === "Prod") {
-        return Just([ [Equal(a.args[0], b.args[0]),
-                       Equal(a.args[1], b.args[1])],
-                      as => Just(undefined) ]);
-    } else if (a.tag === "Arr" && b.tag === "Arr") {
-        return Just([ [Equal(a.args[0], b.args[0]),
-                       Equal(a.args[1], b.args[1])],
-                      as => Just(undefined) ]);
-    } else {
-        return Nothing;
-    }
-}
-
 function decomposeCheck(g,m,a) {
     if (m.tag === "Zero" && a.tag === "Nat") {
         return Just([]);
@@ -240,9 +220,7 @@ function decomposeSynth(g,m) {
 }
 
 function decompose(j) {
-    if (j.tag === "Equal") {
-        return decomposeEqual(j.args[0], j.args[1]);
-    } else if (j.tag === "Check") {
+    if (j.tag === "Check") {
         return decomposeCheck(j.args[0], j.args[1], j.args[2]);
     } else if (j.tag === "Synth") {
         return decomposeSynth(j.args[0], j.args[1]);
