@@ -9,19 +9,9 @@ data Program = Var String | Ann Program Type
              | Lam String Program | App Program Program
   deriving (Show)
 
-data Judgment = Equal Type Type
-              | Check [(String,Type)] Program Type
+data Judgment = Check [(String,Type)] Program Type
               | Synth [(String,Type)] Program
   deriving (Show)
-
-decomposeEqual :: Type -> Type -> Maybe ([Judgment], [Type] -> Maybe Type)
-decomposeEqual Nat Nat =
-  Just ([], \as -> Just undefined)
-decomposeEqual (Prod a1 b1) (Prod a2 b2) =
-  Just ([Equal a1 a2, Equal b1 b2], \as -> Just undefined)
-decomposeEqual (Arr a1 b1) (Arr a2 b2) =
-  Just ([Equal a1 a2, Equal b1 b2], \as -> Just undefined)
-decomposeEqual _ _ = Nothing
 
 decomposeCheck
   :: [(String,Type)]
@@ -29,9 +19,9 @@ decomposeCheck
   -> Type
   -> Maybe ([Judgment], [Type] -> Maybe Type)
 decomposeCheck g Zero Nat =
-  Just []
+  Just ([], \as -> Just undefined)
 decomposeCheck g (Suc m) Nat =
-  Just [Check g m Nat]
+  Just ([Check g m Nat], \as -> Just undefined)
 decomposeCheck g (Pair m n) (Prod a b) =
   Just ([Check g m a, Check g n b], \as -> Just undefined)
 decomposeCheck g (Lam x m) (Arr a b) =
@@ -67,7 +57,6 @@ decomposeSynth g (App f x) =
 decomposeSynth _ _ = Nothing
 
 decompose :: Judgment -> Maybe ([Judgment], [Type] -> Maybe Type)
-decompose (Equal a b) = decomposeEqual a b
 decompose (Check g m a) = decomposeCheck g m a
 decompose (Synth g m) = decomposeSynth g m
 
