@@ -94,6 +94,11 @@ function findProof(j) {
 }
 
 
+
+//
+// Judgments 
+//
+
 function Equal(a,b) {
     return { tag: "Equal", args: [a,b] };
 }
@@ -106,6 +111,12 @@ function Synth(g,m) {
     return { tag: "Synth", args: [g,m] };
 }
 
+
+
+//
+// Types
+//
+
 var Nat = { tag: "Nat" };
 
 function Prod(a,b) {
@@ -115,6 +126,12 @@ function Prod(a,b) {
 function Arr(a,b) {
     return { tag: "Arr", args: [a,b] };
 }
+
+
+
+//
+// Programs
+//
 
 function Var(x) {
     return { tag: "Var", arg: x };
@@ -149,6 +166,8 @@ function Lam(x,m) {
 function App(m,n) {
     return { tag: "App", args: [m,n] };
 }
+
+
 
 
 function decomposeEqual(a,b) {
