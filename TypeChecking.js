@@ -124,6 +124,12 @@ function Ann(m,a) {
     return { tag: "Ann", args: [m,a] };
 }
 
+var Zero = { tag: "Zero" };
+
+function Suc(m) {
+  return { tag: "Suc", arg: m };
+}
+
 function Pair(m,n) {
     return { tag: "Pair", args: [m,n] };
 }
@@ -162,7 +168,11 @@ function decomposeEqual(a,b) {
 }
 
 function decomposeCheck(g,m,a) {
-    if (m.tag === "Pair" && a.tag === "Prod") {
+    if (m.tag === "Zero" && a.tag === "Nat") {
+        return Just([]);
+    } else if (m.tag === "Suc" && a.tag === "Nat") {
+        return Just([Check(g,m.arg,Nat)]);
+    } else if (m.tag === "Pair" && a.tag === "Prod") {
         return Just([ [Check(g, m.args[0], a.args[0]),
                        Check(g, m.args[1], a.args[1])],
                       as => Just(undefined)]);
