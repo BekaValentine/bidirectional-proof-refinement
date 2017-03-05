@@ -4,6 +4,7 @@ data Type = Nat | Prod Type Type | Arr Type Type
   deriving (Show,Eq)
 
 data Program = Var String | Ann Program Type
+             | Zero | Suc Program
              | Pair Program Program | Fst Program | Snd Program
              | Lam String Program | App Program Program
   deriving (Show)
@@ -27,6 +28,10 @@ decomposeCheck
   -> Program
   -> Type
   -> Maybe ([Judgment], [Type] -> Maybe Type)
+decomposeCheck g Zero Nat =
+  Just []
+decomposeCheck g (Suc m) Nat =
+  Just [Check g m Nat]
 decomposeCheck g (Pair m n) (Prod a b) =
   Just ([Check g m a, Check g n b], \as -> Just undefined)
 decomposeCheck g (Lam x m) (Arr a b) =
@@ -80,3 +85,7 @@ findProof j =
         in case f as of
              Nothing -> Nothing
              Just a -> Just (ProofTree j ts, a)
+
+main :: IO ()
+main =
+  do print (findProof (Synth [("p",Prod Nat Nat)] (Fst (Var "p"))))
