@@ -85,7 +85,3 @@ findProof j =
         in case f as of
              Nothing -> Nothing
              Just a -> Just (ProofTree j ts, a)
-
-main :: IO ()
-main =
-  do print (findProof (Synth [("p",Prod Nat Nat)] (Fst (Var "p"))))
